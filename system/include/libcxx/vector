@@ -281,6 +281,7 @@ void swap(vector<T,Allocator>& x, vector<T,Allocator>& y)
 #else
 #   define _LIBCPP_ASSERT(x, m) ((void)0)
 #endif
+#include <__trace>
 
 #if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)
 #pragma GCC system_header
@@ -838,6 +839,7 @@ vector<_Tp, _Allocator>::__swap_out_circular_buffer(__split_buffer<value_type, a
 {
     __alloc_traits::__construct_backward(this->__alloc(), this->__begin_, this->__end_, __v.__begin_);
     _VSTD::swap(this->__begin_, __v.__begin_);
+    _LIBCPP_TRACE_ANNOTATE_ADDRESS_TYPE(this->__begin_, "std::vector storage");
     _VSTD::swap(this->__end_, __v.__end_);
     _VSTD::swap(this->__end_cap(), __v.__end_cap());
     __v.__first_ = __v.__begin_;
@@ -852,6 +854,7 @@ vector<_Tp, _Allocator>::__swap_out_circular_buffer(__split_buffer<value_type, a
     __alloc_traits::__construct_backward(this->__alloc(), this->__begin_, __p, __v.__begin_);
     __alloc_traits::__construct_forward(this->__alloc(), __p, this->__end_, __v.__end_);
     _VSTD::swap(this->__begin_, __v.__begin_);
+    _LIBCPP_TRACE_ANNOTATE_ADDRESS_TYPE(this->__begin_, "std::vector storage");
     _VSTD::swap(this->__end_, __v.__end_);
     _VSTD::swap(this->__end_cap(), __v.__end_cap());
     __v.__first_ = __v.__begin_;
@@ -873,6 +876,7 @@ vector<_Tp, _Allocator>::allocate(size_type __n)
     if (__n > max_size())
         this->__throw_length_error();
     this->__begin_ = this->__end_ = __alloc_traits::allocate(this->__alloc(), __n);
+    _LIBCPP_TRACE_ANNOTATE_ADDRESS_TYPE(this->__begin_, "std::vector storage");
     this->__end_cap() = this->__begin_ + __n;
 }
 
@@ -2414,6 +2418,7 @@ vector<bool, _Allocator>::allocate(size_type __n)
         this->__throw_length_error();
     __n = __external_cap_to_internal(__n);
     this->__begin_ = __storage_traits::allocate(this->__alloc(), __n);
+    _LIBCPP_TRACE_ANNOTATE_ADDRESS_TYPE(this->__begin_, "std::vector storage");
     this->__size_ = 0;
     this->__cap() = __n;
 }
